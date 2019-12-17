@@ -1,0 +1,14 @@
+{% extends "base.html" -%}
+{% block content -%}
+<div class="row">
+  {% if running == False -%}
+    <p>
+        <button type="button" class=" d-flex justify-content-center btn btn-primary background-grey" onclick='window.location.replace("/tournament/create");'>Start your Tournament</button>
+    </p>
+  {% else -%}
+    <p>
+        The Tournament {{ name }} by {{ master }} is running.
+    </p>
+  {% endif -%}
+</div>
+{% endblock -%}

@@ -1,0 +1,73 @@
+{% extends "base.html" -%}
+{% block javascript -%}
+{% if step == 1.0 -%}
+  <script>
+    console.log("Form intervention active");
+    $( "#TournamentNameForm" ).submit(function( event ) {
+      var confirmation = confirm('Are you sure you want to use ' + document.getElementById("TournamentName").value + ' as your tournament name?');
+      if (confirmation) {
+      } else {
+        event.preventDefault();
+      }
+    });
+  </script>
+{% elif step == 3.0 -%}
+  <script>
+    $( "#YesButton" ).click(function( event ) {
+      $( "#step" ).val("3.5");
+      $( "#TournamentNameForm" ).submit();
+    });
+    $( "#NoButton" ).click(function( event ) {
+      $( "#step" ).val("4.0");
+      $( "#TournamentNameForm" ).submit();
+    });
+  </script>
+{% endif -%}
+{% endblock -%}
+{% block content -%}
+{% if step == 1 -%}
+  <form action="/tournament/create" method="get" id="TournamentNameForm">
+    <p class ="form-row">
+      To create your Tournament a name is needed
+    </p>
+    <fieldset class="form-group form-row">
+      <input class="form-control" id="TournamentName" placeholder="Enter Name" name="name" required>
+    </fieldset>
+    <input type="hidden" value="2.0" name="step"></input>
+    <button type="submit" class="btn btn-primary background-grey form-row">Continue</button>
+  </form>
+{% elif step == 2 -%}
+  <form action="/tournament/create" method="get" id="TournamentNameForm">
+    <p class ="form-row">
+      How should I call ya:
+    </p>
+    <fieldset class="form-group form-row">
+      <input class="form-control" id="MasterName" placeholder="Enter Name" name="name" required>
+    </fieldset>
+    <input type="hidden" value="3.0" name="step"></input>
+    <button type="submit" class="btn btn-primary background-grey form-row">Continue</button>
+  </form>
+{% elif step == 3 %}
+<form action="/tournament/create" method="get" id="TournamentNameForm">
+  <p class ="form-row">
+    Do want to add some players?
+    <p>
+        <small>Can also be done later</small>
+    </p>
+  </p>
+  <div class="m-6">
+    <center>
+      <button type="button" class="btn btn-primary background-grey" id="YesButton">Yes</button>
+      <button type="button" class="btn btn-danger background-grey" id="NoButton">No</button>
+    </center>
+  </div>
+  <input type="hidden" name="step" id="step"></input>
+</form>
+{% elif step == 3.5 -%}
+{% elif step == 4 -%}
+<p>
+    You have finished the setup.
+    <br /> Welcome {{ appendix["master"] }} to your {{ appendix["name"] }} Penta Game Tournament.
+</p>
+{% endif -%}
+{% endblock -%}

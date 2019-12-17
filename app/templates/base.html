@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="An onetimer penta-tournament for the 36C3 built with bootstrap 4">
+    <meta name="author" content="Cobalt <https://github.com/Chaostheorie>">
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+    <title>Penta Tournament 36C3</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/blog.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+  </head>
+
+  <body>
+
+    <div class="blog-masthead sticky-top">
+      <div class="container">
+        <nav class="nav blog-nav">
+          {% if active is defined -%}
+            <a class="nav-link {% if active == 'home' -%}active{% endif -%}" href="/">Home</a>
+            <a class="nav-link {% if active == 'leaderboard' -%}active{% endif -%}" href="/leaderboard">Leaderboard</a>
+            <a class="nav-link {% if active == 'games' -%}active{% endif -%}" href="/games">Games</a>
+            <a class="nav-link {% if active == 'players' -%}active{% endif -%}" href="/players">Players</a>
+            <a class="nav-link {% if active == 'about' -%}active{% endif -%}" href="/about">About</a>
+            <a class="nav-link {% if active == 'settings' -%}active{% endif -%}" href="/settings">Settings</a>
+          {% else -%}
+            <a class="nav-link" href="#">Home  <div class="blackout-font" style="page-break-before: never;">36C3</div></a>
+            <a class="nav-link" href="/leaderboard">Leaderboard</a>
+            <a class="nav-link" href="/games">Games</a>
+            <a class="nav-link" href="/players">Players</a>
+            <a class="nav-link" href="/about">About</a>
+            <a class="nav-link" href="/settings">Settings</a>
+          {% endif -%}
+        </nav>
+      </div>
+    </div>
+
+    <div class="blog-header">
+      <div class="container">
+        <h1 class="blog-title blackout-font">Penta-Tournament</h1>
+        <p class="lead blog-description">by <a href="https://github.com/Chaostheorie" class="text-muted">Cobalt</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      {% block content -%}{% endblock -%}
+    </div>
+    {% block javascript -%}
+    {% endblock -%}
+    {% block footer -%}
+    {% if footer is defined -%}
+      {% if footer == True -%}
+        <footer class="blog-footer container mt-6">
+          <p> @2019 <a href="https://github.com/Chaostheorie" class="text-muted">Cobalt</a>. See our <a href="/about" clas="text-muted">About section</a></a> for more infromation.
+
+          </p>
+        </footer>
+      {% endif -%}
+    {% else -%}
+    <footer class="blog-footer container mt-6">
+      <p> @2019 <a href="https://github.com/Chaostheorie" class="text-muted">Cobalt</a>. See our <a href="/about" clas="text-muted">About section</a></a> for more infromation.
+
+      </p>
+    </footer>
+    {% endif -%}
+    {% endblock -%}
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+
+
+  </body>
+</html>

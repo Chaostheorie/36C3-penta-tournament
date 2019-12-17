@@ -1,0 +1,76 @@
+{% extends "base.html" -%}
+{% block javascript -%}
+  <script>
+    $( "#CleanupButton" ).click( function ( event ) {
+      if (confirm("Do you really want to do a cleanup? All data will be lost!")) {
+        window.location.replace("/cleanup");
+      }
+    });
+    $( "#ChangeTournamentNameForm" ).submit(function( event ) {
+      event.preventDefault();
+      $.get( "/settings/changename", { name: document.getElementById("TournamentName").value}, function( data ) {
+        location.reload();
+        });
+      });
+      $( "#ChangeMasterNameForm" ).submit(function( event ) {
+        event.preventDefault();
+        $.get( "/settings/changemaster", { name: document.getElementById("MasterName").value}, function( data ) {
+          location.reload();
+          });
+        });
+  </script>
+{% endblock -%}
+{% block content -%}
+<div class="container" id="GeneralSettingsRow">
+  <div class="container">
+      <div class="row m-2">
+          <div class="col">
+            Cleanup up all files and reset to factory settings
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-danger" id="CleanupButton">Cleanup</button>
+          </div>
+      </div>
+      <form class="row m-2" id="ChangeTournamentNameForm">
+          <fieldset class="col form-group">
+              <input value='{{ tournament_name }}' name="TournamentName" id="TournamentName" placeholder="Enter New Tournament Name"></input>
+          </fieldset>
+          <div class="col">
+              <button type="submit" class="btn btn-primary background-grey" name="ChangeTournamentNameButton">Change Name</button>
+          </div>
+      </form>
+      <form class="row m-2" id="ChangeMasterNameForm">
+          <fieldset class="col form-group">
+              <input value='{{ master }}' name="MasterName" id="TournamentName" placeholder="Enter New Master Name"></input>
+          </fieldset>
+          <div class="col">
+              <button type="submit" class="btn btn-primary background-grey" name="ChangeMasterNameButton">Change Name</button>
+          </div>
+      </form>
+      <div class="row">
+          <div class="col">
+
+          </div>
+          <div class="col">
+
+          </div>
+      </div>
+      <div class="row">
+          <div class="col">
+
+          </div>
+          <div class="col">
+
+          </div>
+      </div>
+      <div class="row">
+          <div class="col">
+
+          </div>
+          <div class="col">
+
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock -%}

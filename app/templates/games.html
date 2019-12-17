@@ -1,0 +1,36 @@
+{% set footer = False -%}
+{% extends "base.html" -%}
+{% block content -%}
+<p>
+  Games {{ games.items[0].id }}-{{ games.items[-1].id }}:
+</p>
+<p>
+<div class="container">
+  {% for game in games.items -%}
+  <div class="m-2">
+    <div class="card">
+      <div class="card-body">
+      <h5 class="card-title">#{{ game.id }}</h5>
+      <p class="card-text">Game by {{ game.players|listify }} <br /> Winner: {{ game.winner.username }}</p>
+      <hr class="my-4">
+      <p></p>
+      <a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor -%}
+</div>
+</p>
+<br>
+<div class="d-flex justify-content-center mb-5">
+  <div class="btn-toolbar" role="toolbar">
+    <div class="btn-group text-muted" role="group">
+      {% if games.has_prev -%}<button type="button" class="btn btn-secondary background-grey" onclick="window.location.href='{{ url_for("games_main_view", page=games.prev_num) }}'"><</button>{% endif -%}
+      {% for i in range(1, games.pages+1) -%}
+        <button type="button" class="btn btn-secondary background-secondary" onclick="window.location.href='{{ url_for("games_main_view", page=i) }}'">{{ i }}</button>
+      {% endfor -%}
+      {% if games.has_next -%}<button type="button" class="btn btn-secondary background-grey" onclick="window.location.href='{{ url_for("games_main_view", page=games.next_num) }}'">></button>{% endif -%}
+    </div>
+  </div>
+</div>
+{% endblock -%}
