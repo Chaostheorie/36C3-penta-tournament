@@ -1,4 +1,6 @@
 from app import db
+import app.utils as utils
+from sqlalchemy.sql import func
 from operator import itemgetter
 
 
@@ -6,7 +8,7 @@ class Players(db.Model):
     __tablename__ = "players"
 
     id = db.Column(db.Integer(), primary_key="True")
-    name = db.Column(db.String())
+    name = db.Column(db.String(), unique=True)
 
     def points(self):
         points = 0
@@ -55,14 +57,48 @@ class Games(db.Model):
     players = db.relationship("Players", secondary="players_games",
                               backref=db.backref("games", lazy="dynamic"))
 
-    def winner(self):
-        winner = self.result[0]
-        for player in self.result:
-            if player["points"] > winner["points"]:
-                winner = player
+    def winner(self, only_full=False):
+        if only_full:
+            winner = None
+            for player in self.result:
+                if player["points"] == 3:
+                    winner = player
+                    break
+            if winner is None:
+                return None
+        else:
+            winner = self.result[0]
+            for player in self.result:
+                if player["points"] > winner["points"]:
+                    winner = player
         for player in self.players:
             if player.id == winner["player_id"]:
                 return player
+        return None
+
+    @staticmethod
+    def unmatched(player1, player2):
+        test_statement = PlayersGames.player_id == player1.id or PlayersGames.player_id == player2.id
+        test_query = PlayersGames.query.filter(test_statement).all()
+        if utils.duplicates_exist(test_query):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def find_pair(player1=None):
+        """Find pair """
+        if player1 is None:
+            player1 = Players.query.order_by(func.random()).first()
+        players = [{"player": player, "points": player.points()}
+                   for player in Players.query.filter(Players.id != player1.id
+                                                      ).all()]
+        players = utils.sortin(players, player1, extract=True)
+        for player in players:
+            if Games.unmatched(player1, player):
+                player2 = player
+                break
+        return player1, player2
 
     def __repr__(self):
         return f"<game {self.id} from {self.date.strftime('%d.%m.%Y')}>"

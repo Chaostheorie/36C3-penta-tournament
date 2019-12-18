@@ -1,5 +1,23 @@
 {% set footer = False -%}
+{% set sub_header = False -%}
 {% extends "base.html" -%}
+{% block javascript -%}
+<script>
+    $( "#ViewAllGamesButton" ).click( function () {
+        window.location = "/games?viewoption=all";
+    });
+    $( "#ViewRunningGamesButton" ).click( function () {
+        window.location = "/games?viewoption=current";
+    });
+</script>
+{% endblock -%}
+{% block advanced_sub_header -%}
+<div class="btn-group" role="group" aria-label="Game Actions">
+  <button type="button" class="btn background-grey {% if btn_active == "current" -%}background-ligth-grey{% endif -%}" role="button" id="ViewRunningGamesButton">Running</button>
+  <a href="/games/create-game" class="btn background-grey" role="button">Create Game</a>
+  <button type="button" class="btn background-grey {% if btn_active == "all" -%}background-ligth-grey{% endif -%}" role="button" id="ViewAllGamesButton">All</button>
+</div>
+{% endblock -%}
 {% block content -%}
 <p>
   Games {{ games.items[0].id }}-{{ games.items[-1].id }}:
@@ -10,6 +28,7 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Winner</th>
+        <th scope="col">State</th>
         <th scope="col">Participants</th>
         <th></th>
       </tr>
@@ -18,12 +37,13 @@
       {% for game in games.items -%}
         <tr class="blackout-font">
           <th scope="row">{{ game.id }}</th>
-          {% set winner = game.winner() -%}
+          {% set winner = game.winner(only_full=True) -%}
           {% if winner == None -%}
             <td>&#10060;</td>
           {% else -%}
             <td>{{ winner.name }}</td>
           {% endif -%}
+          <td>{{ game.parse_state() }}</td>
           <td>{{ game.players|listify("name", extract_attr=True) }}</td>
           <td><a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
         </tr>

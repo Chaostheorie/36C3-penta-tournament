@@ -1,0 +1,13 @@
+{% extends "base.html" -%}
+{% block content -%}
+<div class="row d-flex justify-content-center">
+    <p>
+        Select method:
+    </p>
+</div>
+<div class="d-flex justify-content-center btn-group">
+  <a href="/games/create-game/pre-defined" class="btn background-grey">Select Players</a>
+  <a href="/games/create-game/unpaired" class="btn background-grey">Unpaired Matchup</a>
+  <a href="/games/create-game/find-opponent" class="btn background-grey">Find Opponent</a>
+</div>
+{% endblock -%}

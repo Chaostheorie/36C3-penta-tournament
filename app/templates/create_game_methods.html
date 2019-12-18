@@ -1,0 +1,16 @@
+{% set sub_header = False -%}
+{% extends "base.html" -%}
+{% block advanced_sub_header -%}
+<div class="row">
+  <div class="col-5">Creating Match with {{ method_parsed }} Method. </div> <a href="/games/create-game" class="col-1 btn background-grey">Return</a>
+</div>
+{% endblock -%}
+{% block javascript -%}
+{% endblock -%}
+{% block content -%}
+{% if method == "unpaired" -%}
+  <p>
+      {{ appendix["player1"].name }} and {{ appendix["player2"].name }}
+  </p>
+{% endif -%}
+{% endblock -%}

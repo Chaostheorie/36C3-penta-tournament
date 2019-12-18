@@ -25,18 +25,44 @@ def players_main_view():
 @app.route("/games")
 @app.route("/games/<int:page>")
 def games_main_view(page=1):
-    games = Games.query.paginate(page, per_page=30)
+    viewoption = request.args.get("viewoption", default="current")
+    if viewoption == "current":
+        games = Games.query.filter_by(state=1).paginate(page, per_page=30)
+        btn_active = "current"
+    elif viewoption == "all":
+        games = Games.query.paginate(page, per_page=30)
+        btn_active = "all"
+    else:
+        games = Games.query.filter_by(state=1).paginate(page, per_page=30)
+        btn_active = "current"
     return render_template("games.html", active="games",
-                           games=games)
+                           games=games, btn_active=btn_active)
 
 
 @app.route("/user/<int:id>")
 def view_game(id):
     return Players.query.get_or_404(id)
 
-@app.route("/game/create")
-def create_game():
-    return
+
+@app.route("/games/create-game")
+@app.route("/games/create-game/<method>")
+def create_game_select(method="selection"):
+    appendix = {}
+    if method == "selection":
+        return render_template("create_game_select.html", active="games")
+    elif method == "unpaired":
+        appendix["player1"], appendix["player2"] = Games.find_pair()
+        parsed = "Switzer System"
+    elif method == "find-opponent":
+        parsed = "Find Opponent"
+    elif method == "pre-defined":
+        parsed = "Pre Defined"
+    else:
+        print(method)
+        return render_template("create_game_select.html", active="games")
+    return render_template("create_game_methods.html", active="games",
+                           method=method, method_parsed=parsed,
+                           appendix=appendix)
 
 
 @app.route("/tournament/create")

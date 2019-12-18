@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Players
+from itertools import groupby
 import json
 
 
@@ -23,6 +23,7 @@ def cleanup():
 
 
 def add_player(name):
+    from app.models import Players
     player = Players(name=name)
     db.session.add(player)
     db.session.flush()
@@ -36,3 +37,28 @@ def load_preenv():
         for key, val in preenv.items():
             app.__setattr__(key, val)
     return
+
+
+def duplicates_exist(list):
+    probe = []
+    for item in list:
+        if item in probe:
+            probe.append(item)
+        else:
+            return False
+    return True
+
+
+def sortin(players, player, extract=False):
+    points = player.points()
+    players = [i[0] for i in groupby(players)]
+    for i in range(len(players)):
+        if players[i]["points"] <= points:
+            players.insert(0, players[i])
+            players.pop(i+1)
+        else:
+            players.insert(-1, players[i])
+            players.pop(i+1)
+    if extract:
+        return [_player["player"] for _player in players]
+    return players

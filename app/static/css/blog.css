@@ -97,12 +97,23 @@ h6, .h6 {
 
 .background-grey {
   background-color: #333333;
-  border-color: inherit;
+  border-color: transparent;
+  color: white;
 }
 
 .background-grey:hover {
   background-color: #505050;
+  border-color: transparent;
+  color: white;
+}
+
+.background-ligth-grey {
+  background-color: #6a6a6a;
   border-color: inherit;
+}
+
+.background-ligth-grey:hover {
+
 }
 
 
