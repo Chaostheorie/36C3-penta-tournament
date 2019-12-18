@@ -6,7 +6,6 @@ import app.utils as utils
 
 @app.route("/")
 def index():
-    print(app.master_name)
     return render_template("index.html", active="home", running=app.running,
                            name=app.tournament_name, master=app.master_name)
 
@@ -19,7 +18,8 @@ def cleanup():
 
 @app.route("/players")
 def players_main_view():
-    return render_template("players_main_view.html", active="players")
+    players = Players.query.all()
+    return render_template("players_main_view.html", active="players", players=players)
 
 
 @app.route("/games")
@@ -72,6 +72,17 @@ def delete_player():
     return jsonify(utils.remove_player(request.args.get("name")))
 
 
+@app.route("/player/<int:id>")
+def player_view(id):
+    return render_template("player_view.html", active="players",
+                           player=Players.query.get_or_404(id))
+
+
+@app.route("/players/add-players")
+def add_players():
+    return render_template("add_players.html", active="players")
+
+
 @app.route("/settings")
 def settings():
     return render_template("settings.html", tournament_name=app.tournament_name,
@@ -103,9 +114,8 @@ def changemastername():
 
 @app.route("/leaderboard")
 def leaderboard():
-    limit = name = request.args.get("limit", default=100, type=int)
+    limit = request.args.get("limit", default=100, type=int)
     players = Players.get_leaderboard(limit)
-    print(players)
     return render_template("leaderboard.html", active="leaderboard",
                            players=players)
 

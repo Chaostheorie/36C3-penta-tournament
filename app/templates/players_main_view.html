@@ -1,1 +1,29 @@
+{% set footer = False -%}
+{% set sub_header = False -%}
 {% extends "base.html" -%}
+{% block advanced_sub_header -%}
+<a href="/players/add-players" class="btn btn-primary background-grey">Add Players</a>
+{% endblock -%}
+{% block content -%}
+<div class="container">
+  <table class="table">
+    <thead class="thead-dark blackout-font">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in players -%}
+        <tr class="blackout-font">
+          <th scope="row">{{ player.id }}</th>
+          <td>{{ player.name }}</td>
+          <td>{{ player.points() }}</td>
+          <td><a href="{{ url_for("player_view", id=player.id) }}" class="btn btn-primary background-grey">See More</a></td>
+        </tr>
+      {% endfor -%}
+    </tbody>
+  </table>
+</div>
+{% endblock -%}

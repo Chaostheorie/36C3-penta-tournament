@@ -13,6 +13,7 @@ class config(object):
     APP_VERSION = "Experimental"
     APP_NAME = "36C3 Edition Penta-Tournament"
     APP_LOCAL = "en"
+    LOAD_PREENV = True
 
     # SQLAlchemy Settings
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI") or \

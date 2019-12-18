@@ -16,10 +16,11 @@ db.create_all()
 
 
 from app.utils import load_preenv
-try:
-    load_preenv()
-except JSONDecodeError:
-    print("Skipped Preenv loading")
+if app.config["LOAD_PREENV"] is True:
+    try:
+        load_preenv()
+    except JSONDecodeError:
+        print("Skipped Preenv loading")
 
 from app.routes import *
 from app.filters import *

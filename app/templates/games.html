@@ -4,23 +4,33 @@
 <p>
   Games {{ games.items[0].id }}-{{ games.items[-1].id }}:
 </p>
-<p>
-<div class="container">
-  {% for game in games.items -%}
-  <div class="m-2">
-    <div class="card">
-      <div class="card-body">
-      <h5 class="card-title">#{{ game.id }}</h5>
-      <p class="card-text">Game by {{ game.players|listify }} <br /> Winner: {{ game.winner.username }}</p>
-      <hr class="my-4">
-      <p></p>
-      <a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a>
-      </div>
-    </div>
-  </div>
-  {% endfor -%}
+<div class="d-flex justify-content-center pagination">
+  <table class="table">
+    <thead class="thead-dark blackout-font">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Winner</th>
+        <th scope="col">Participants</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for game in games.items -%}
+        <tr class="blackout-font">
+          <th scope="row">{{ game.id }}</th>
+          {% set winner = game.winner() -%}
+          {% if winner == None -%}
+            <td>&#10060;</td>
+          {% else -%}
+            <td>{{ winner.name }}</td>
+          {% endif -%}
+          <td>{{ game.players|listify("name", extract_attr=True) }}</td>
+          <td><a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
+        </tr>
+      {% endfor -%}
+    </tbody>
+  </table>
 </div>
-</p>
 <br>
 <div class="d-flex justify-content-center mb-5">
   <div class="btn-toolbar" role="toolbar">

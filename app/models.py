@@ -1,4 +1,5 @@
 from app import db
+from operator import itemgetter
 
 
 class Players(db.Model):
@@ -18,7 +19,8 @@ class Players(db.Model):
     def get_leaderboard(limit=100):
         players = [{"player": player, "points": player.points()}
                    for player in Players.query.all()]
-        return players[:100]
+        players = sorted(players, key=itemgetter("points"), reverse=True)
+        return players[:limit]
 
 
 class Games(db.Model):
