@@ -1,11 +1,20 @@
 {% extends "base.html" -%}
 {% block javascript -%}
   <script>
-      var test = "Test";
+      $( "#CreatePlayerForm" ).submit( function ( event ) {
+        event.preventDefault();
+        $.post( "/player/create", { name: document.getElementById("NameField").value }, function( data ) {
+          window.location = "/player/view/" + data["id"];
+          });
+        console.log("LOL");
+      });
   </script>
 {% endblock -%}
 {% block content -%}
-<form class="form">
-
+<form class="form" id="CreatePlayerForm">
+  <fieldset class="form-group form-row">
+    <input class="form-control" id="NameField" placeholder="Enter Name" name="name" required>
+  </fieldset>
+  <button type="submit" class="btn background-grey">Create</button>
 </form>
 {% endblock -%}

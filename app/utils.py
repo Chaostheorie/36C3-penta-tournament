@@ -26,8 +26,9 @@ def add_player(name):
     from app.models import Players
     player = Players(name=name)
     db.session.add(player)
+    db.session.commit()
     db.session.flush()
-    return player
+    return {"id": player.id, "name": player.name}
 
 
 def load_preenv():
@@ -62,3 +63,19 @@ def sortin(players, player, extract=False):
     if extract:
         return [_player["player"] for _player in players]
     return players
+
+
+def create_game(player1, player2, flush=False):
+    from app.models import Games, PlayersGames
+    g = Games(result=[{"player_id": player1.id, "points": 0},
+                      {"player_id": player2.id, "points": 0}])
+    db.session.add(g)
+    db.session.flush()
+    pg1 = PlayersGames(player_id=player1.id, game_id=g.id)
+    pg2 = PlayersGames(player_id=player2.id, game_id=g.id)
+    db.session.add(pg1)
+    db.session.add(pg2)
+    db.session.commit()
+    if flush:
+        db.session.flush()
+    return g

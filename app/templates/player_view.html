@@ -1,0 +1,41 @@
+{% set footer = False -%}
+{% extends "base.html" -%}
+{% block content -%}
+<div class="row blackout-font h3">
+    {{ player.name }}
+</div>
+<div class="row blackout-font h6">
+    Points: {{ player.points() }}
+</div>
+<div class="row">
+  <div class="d-flex justify-content-center">
+    <table class="table">
+      <thead class="thead-dark blackout-font">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Winner</th>
+          <th scope="col">State</th>
+          <th scope="col">Participants</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for game in player.games.all() -%}
+          <tr class="blackout-font">
+            <th scope="row">{{ game.id }}</th>
+            {% set winner = game.winner(only_full=True) -%}
+            {% if winner == None -%}
+              <td>&#10060;</td>
+            {% else -%}
+              <td>{{ winner.name }}</td>
+            {% endif -%}
+            <td>{{ game.parse_state() }}</td>
+            <td>{{ game.players|listify("name", extract_attr=True) }}</td>
+            <td><a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
+          </tr>
+        {% endfor -%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock -%}

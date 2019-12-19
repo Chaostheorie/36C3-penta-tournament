@@ -1,4 +1,5 @@
 {% set sub_header = False -%}
+{% set footer = False -%}
 {% extends "base.html" -%}
 {% block advanced_sub_header -%}
 <div class="row">
@@ -6,11 +7,120 @@
 </div>
 {% endblock -%}
 {% block javascript -%}
+{% if method == "unpaired" or method == "find-opponent" -%}
+  <script>
+      $( "#CreateMatchButton" ).click(function () {
+        $.post( "/game/create", { player1: {{ appendix["player1"].id }}, player2: {{ appendix["player2"].id }} }, function( data ) {
+          window.location = "/games/view/" + data["id"];
+          });
+        });
+      $( "#NewMatchupButton" ).click(function () {
+        location.reload();
+        });
+  </script>
+{% elif method == "pre-defined" -%}
+<script>
+    $( "#CreateMatchButton" ).click(function () {
+      $.post( "/game/create", { player1: document.getElementById("player1").value, player2: document.getElementById("player2").value}, function( data ) {
+        window.location = "/games/view/" + data["id"];
+      });});
+</script>
+{% elif method == "find-opponent-input" -%}
+<script>
+    $( "#FindOpponentInputButton" ).click(function () {
+      window.location = "/games/create-game/find-opponent?player=" + document.getElementById("player").value;
+    });
+</script>
+{% endif -%}
 {% endblock -%}
 {% block content -%}
 {% if method == "unpaired" -%}
-  <p>
-      {{ appendix["player1"].name }} and {{ appendix["player2"].name }}
-  </p>
+<div class="row blackout-font">
+    <div class="col-md h4">
+        {{ appendix["player1"].name }}
+    </div>
+    <div class="col-sm h4">
+        ⚡
+    </div>
+    <div class="col-md h4">
+        {{ appendix["player2"].name }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md">
+        <small>Points: {{ appendix["player1"].points() }}</small>
+    </div>
+    <div class="col-sm">
+    </div>
+    <div class="col-md">
+        <small>Points: {{ appendix["player2"].points() }}</small>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md"></div>
+  <div class="btn-group col-sm">
+      <button type="button" class="btn background-grey" id="CreateMatchButton">Create Match</button>
+      <button type="button" class="btn background-grey" id="NewMatchupButton">New Matchup</button>
+  </div>
+  <div class="col-md"></div>
+</div>
+
+{% elif method == "pre-defined" %}
+<div class="row blackout-font">
+  <div class="col-md h4">
+      <input class="form-control" name="player1" id="player1" placeholder="Enter Player 1 name" required></input>
+  </div>
+    <div class="col-sm h4">
+        <center>⚡</center>
+    </div>
+    <div class="col-md h4">
+        <input class="form-control" name="player2" id="player2" placeholder="Enter Player 2 name" required></input>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md"></div>
+  <div class="btn-group col-sm">
+      <center><button type="button" class="btn background-grey" id="CreateMatchButton">Create Match</button></center>
+  </div>
+  <div class="col-md"></div>
+</div>
+{% elif method == "find-opponent" -%}
+<div class="row blackout-font">
+    <div class="col-md h4">
+        {{ appendix["player1"].name }}
+    </div>
+    <div class="col-sm h4">
+        ⚡
+    </div>
+    <div class="col-md h4">
+        {{ appendix["player2"].name }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md">
+        <small>Points: {{ appendix["player1"].points() }}</small>
+    </div>
+    <div class="col-sm">
+    </div>
+    <div class="col-md">
+        <small>Points: {{ appendix["player2"].points() }}</small>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md"></div>
+  <div class="btn-group col-sm">
+      <button type="button" class="btn background-grey" id="CreateMatchButton">Create Match</button>
+      <button type="button" class="btn background-grey" id="NewMatchupButton">New Matchup</button>
+  </div>
+  <div class="col-md"></div>
+</div>
+{% elif method == "find-opponent-input" -%}
+<div class="row blackout-font">
+  <div class="col-md">
+      <input class="form-control" name="player" id="player" placeholder="Enter Player name" required></input>
+  </div>
+  <div class="col-sm">
+      <button type="button" class="btn background-grey" id="FindOpponentInputButton">Find Opponent</button>
+  </div>
 {% endif -%}
 {% endblock -%}

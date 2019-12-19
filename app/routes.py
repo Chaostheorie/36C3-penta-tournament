@@ -39,9 +39,24 @@ def games_main_view(page=1):
                            games=games, btn_active=btn_active)
 
 
+@app.route("/game/create", methods=["POST"])
+def create_game():
+    if "player2" in request.form.keys() and "player1" in request.form.keys():
+        player1 = Players.query.filter_by(name=request.form["player1"]).first_or_404()
+        player2 = Players.query.filter_by(name=request.form["player2"]).first_or_404()
+        game = utils.create_game(player1, player2, flush=True)
+        return jsonify({"id": game.id})
+    else:
+        return abort(400)
+
 @app.route("/user/<int:id>")
 def view_game(id):
     return Players.query.get_or_404(id)
+
+
+@app.route("/games/view/<int:id>")
+def game_view(id):
+    return render_template("game_view.html", game=Games.query.get_or_404(id))
 
 
 @app.route("/games/create-game")
@@ -55,6 +70,12 @@ def create_game_select(method="selection"):
         parsed = "Switzer System"
     elif method == "find-opponent":
         parsed = "Find Opponent"
+        player1 = request.args.get("player", default=None)
+        if player1 is None:
+            method = "find-opponent-input"
+        else:
+            player1 = Players.query.filter_by(name=player1).first_or_404()
+            appendix["player1"], appendix["player2"] = Games.find_pair(player1)
     elif method == "pre-defined":
         parsed = "Pre Defined"
     else:
@@ -87,9 +108,9 @@ def create_tournament():
                            step=step, active="settings", appendix=appendix)
 
 
-@app.route("/player/create")
+@app.route("/player/create", methods=["POST"])
 def add_player():
-    player_dict = utils.add_player(request.args.get("name"))
+    player_dict = utils.add_player(request.form["name"])
     return jsonify(player_dict)
 
 
@@ -98,7 +119,7 @@ def delete_player():
     return jsonify(utils.remove_player(request.args.get("name")))
 
 
-@app.route("/player/<int:id>")
+@app.route("/player/view/<int:id>")
 def player_view(id):
     return render_template("player_view.html", active="players",
                            player=Players.query.get_or_404(id))
