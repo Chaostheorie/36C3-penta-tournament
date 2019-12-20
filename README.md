@@ -18,7 +18,7 @@ Now you only need to start the local flask devolepement server with:
 python3 main.py
 ```
 
-It can happen that at the first startup, while the db is created, the instance may happen to crash or malfunction. Just restart and restart the `main.py` file.
+It can happen that at the first startup, while the db is created, the instance may happen to crash or malfunction. Just restart and restart the `main.py` file. The appplication is after this step avaliable on "<https://localhost:5000>" and you can open it with your browser.
 
 Notes:
 
