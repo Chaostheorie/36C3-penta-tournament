@@ -14,22 +14,38 @@
           window.location = "/games/view/" + data["id"];
           });
         });
-      $( "#NewMatchupButton" ).click(function () {
-        location.reload();
+        $( "#NewMatchupButton" ).click(function () {
+          window.location = "/games/create-game/find-opponent?player=" + document.getElementById("player").innerText + "&opponent=" + document.getElementById("opponent").innerText;
         });
   </script>
+{% elif method == "find-opponent-input" -%}
+<script>
+  $( "#NewMatchupButton" ).click(function () {
+    location.reload();
+    });
+    $('.basicAutoComplete').autoComplete({
+    resolverSettings: {
+        url: '/players/autocomplete.json'
+    },
+    minLength: 1
+});
+    $( "#FindOpponentInputButton" ).click(function () {
+      window.location = "/games/create-game/find-opponent?player=" + document.getElementById("player").value;
+    });
+</script>
 {% elif method == "pre-defined" -%}
 <script>
     $( "#CreateMatchButton" ).click(function () {
       $.post( "/game/create", { player1: document.getElementById("player1").value, player2: document.getElementById("player2").value}, function( data ) {
         window.location = "/games/view/" + data["id"];
       });});
-</script>
-{% elif method == "find-opponent-input" -%}
-<script>
-    $( "#FindOpponentInputButton" ).click(function () {
-      window.location = "/games/create-game/find-opponent?player=" + document.getElementById("player").value;
-    });
+      $('.basicAutoComplete').autoComplete({
+      resolverSettings: {
+          url: '/players/autocomplete.json'
+      },
+      minLength: 1
+  });
+
 </script>
 {% endif -%}
 {% endblock -%}
@@ -68,13 +84,13 @@
 {% elif method == "pre-defined" %}
 <div class="row blackout-font">
   <div class="col-md h4">
-      <input class="form-control" name="player1" id="player1" placeholder="Enter Player 1 name" required></input>
+      <input class="form-control basicAutoComplete" autocomplete="off" name="player1" id="player1" placeholder="Enter Player 1 name" required></input>
   </div>
     <div class="col-sm h4">
         <center>⚡</center>
     </div>
     <div class="col-md h4">
-        <input class="form-control" name="player2" id="player2" placeholder="Enter Player 2 name" required></input>
+        <input class="form-control basicAutoComplete" autocomplete="off" name="player2" id="player2" placeholder="Enter Player 2 name" required></input>
     </div>
 </div>
 <div class="row">
@@ -86,13 +102,13 @@
 </div>
 {% elif method == "find-opponent" -%}
 <div class="row blackout-font">
-    <div class="col-md h4">
+    <div class="col-md h4" id="player">
         {{ appendix["player1"].name }}
     </div>
     <div class="col-sm h4">
         ⚡
     </div>
-    <div class="col-md h4">
+    <div class="col-md h4" id="opponent">
         {{ appendix["player2"].name }}
     </div>
 </div>
@@ -107,8 +123,8 @@
     </div>
 </div>
 <div class="row">
-  <div class="col-md"></div>
-  <div class="btn-group col-sm">
+  <div class="col-sm"></div>
+  <div class="btn-group col-md">
       <button type="button" class="btn background-grey" id="CreateMatchButton">Create Match</button>
       <button type="button" class="btn background-grey" id="NewMatchupButton">New Matchup</button>
   </div>
@@ -117,7 +133,7 @@
 {% elif method == "find-opponent-input" -%}
 <div class="row blackout-font">
   <div class="col-md">
-      <input class="form-control" name="player" id="player" placeholder="Enter Player name" required></input>
+      <input class="form-control basicAutoComplete" autocomplete="off" name="player" id="player" placeholder="Enter Player name" required></input>
   </div>
   <div class="col-sm">
       <button type="button" class="btn background-grey" id="FindOpponentInputButton">Find Opponent</button>

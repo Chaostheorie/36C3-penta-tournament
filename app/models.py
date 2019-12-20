@@ -13,8 +13,18 @@ class Players(db.Model):
     def points(self):
         points = 0
         for game in self.games.all():
-            if game.winner().id == self.id:
-                points += 1
+            winner = (game.winner().id == self.id)
+            difference = 0
+            for player in game.result:
+                not_self = (player["player_id"] != self.id)
+                if player["points"] > difference and winner and not_self:
+                    difference = player["points"]
+                elif player["player_id"] == self.id and winner is False and not_self:
+                    differnce = player["points"]
+            if winner:
+                points += 3 - difference
+            else:
+                points -= 3 - difference
         return points
 
     @staticmethod
@@ -86,7 +96,7 @@ class Games(db.Model):
             return False
 
     @staticmethod
-    def find_pair(player1=None):
+    def find_pair(player1=None, exceptions=[]):
         """Find pair """
         if player1 is None:
             player1 = Players.query.order_by(func.random()).first()
@@ -95,7 +105,7 @@ class Games(db.Model):
                                                       ).all()]
         players = utils.sortin(players, player1, extract=True)
         for player in players:
-            if Games.unmatched(player1, player):
+            if Games.unmatched(player1, player) and player.name not in exceptions:
                 player2 = player
                 break
         return player1, player2

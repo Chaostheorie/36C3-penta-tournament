@@ -1,6 +1,7 @@
 from app import app
 from app.models import Games, Players
 from flask import render_template, request, jsonify, abort
+from sqlalchemy import select
 import app.utils as utils
 
 
@@ -19,7 +20,19 @@ def cleanup():
 @app.route("/players")
 def players_main_view():
     players = Players.query.all()
-    return render_template("players_main_view.html", active="players", players=players)
+    return render_template("players_main_view.html", active="players",
+                           players=players)
+
+
+@app.route("/players/autocomplete.json")
+def players_autocomplete():
+    snippet = request.args.get("q", default="None")
+    if snippet is None:
+        players = Players.query.with_entities(Players.name).all()
+    else:
+        players = Players.query.filter(Players.name.contains(snippet)
+                                       ).with_entities(Players.name).all()
+    return jsonify([str(name[0]) for name in players])
 
 
 @app.route("/games")
@@ -71,11 +84,12 @@ def create_game_select(method="selection"):
     elif method == "find-opponent":
         parsed = "Find Opponent"
         player1 = request.args.get("player", default=None)
+        opponent = request.args.get("opponent", default=None)
         if player1 is None:
             method = "find-opponent-input"
         else:
             player1 = Players.query.filter_by(name=player1).first_or_404()
-            appendix["player1"], appendix["player2"] = Games.find_pair(player1)
+            appendix["player1"], appendix["player2"] = Games.find_pair(player1, exceptions=[opponent])
     elif method == "pre-defined":
         parsed = "Pre Defined"
     else:
