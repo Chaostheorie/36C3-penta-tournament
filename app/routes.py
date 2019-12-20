@@ -1,7 +1,6 @@
 from app import app
 from app.models import Games, Players
 from flask import render_template, request, jsonify, abort
-from sqlalchemy import select
 import app.utils as utils
 
 
