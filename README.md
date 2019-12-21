@@ -19,7 +19,3 @@ python3 main.py
 ```
 
 It can happen that at the first startup, while the db is created, the instance may happen to crash or malfunction. Just restart and restart the `main.py` file. The appplication is after this step avaliable on "<https://localhost:5000>" and you can open it with your browser.
-
-Notes:
-
-- For persistent tournament name usw. use preenv.json (`36C3-penta-tournament/preenv.json` See wiki for more <https://github.com/Penta-Game/36C3-penta-tournament/wiki/Preenv.json---Persistent-Tournament>)
