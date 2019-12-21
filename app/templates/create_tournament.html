@@ -14,11 +14,13 @@
 {% elif step == 3.0 -%}
   <script>
     $( "#YesButton" ).click(function( event ) {
-      $( "#step" ).val("3.5");
+      $( "#step" ).val("4");
+      $( "#add_players" ).val(true);
       $( "#TournamentNameForm" ).submit();
     });
     $( "#NoButton" ).click(function( event ) {
       $( "#step" ).val("4.0");
+      $( "#add_players" ).val(false);
       $( "#TournamentNameForm" ).submit();
     });
   </script>
@@ -61,6 +63,7 @@
       <button type="button" class="btn btn-danger background-grey" id="NoButton">No</button>
     </center>
   </div>
+  <input type="hidden" name="add_players" id="add_players" value="false"></input>
   <input type="hidden" name="step" id="step"></input>
 </form>
 {% elif step == 3.5 -%}

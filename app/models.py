@@ -122,3 +122,11 @@ class PlayersGames(db.Model):
                         db.ForeignKey("games.id", ondelete="CASCADE"))
     player_id = db.Column(db.Integer(),
                           db.ForeignKey("players.id", ondelete="CASCADE"))
+
+
+class Enviroment(db.Model):
+    __tablename__ = "enviroment"
+
+    key = db.Column(db.String(), primary_key=True)
+    val = db.Column(db.JSON())  # {"val": val}
+    type = db.Column(db.Integer())  # 1: config, 0: app.

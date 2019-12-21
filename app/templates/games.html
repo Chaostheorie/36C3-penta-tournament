@@ -12,13 +12,14 @@
 </script>
 {% endblock -%}
 {% block advanced_sub_header -%}
-<div class="btn-group" role="group" aria-label="Game Actions">
+<div class="btn-group {% if game_creation == False-%}disabled{% endif -%}" role="group" aria-label="Game Actions">
   <button type="button" class="btn background-grey {% if btn_active == "current" -%}background-ligth-grey{% endif -%}" role="button" id="ViewRunningGamesButton">Running</button>
   <a href="/games/create-game" class="btn background-grey" role="button">Create Game</a>
   <button type="button" class="btn background-grey {% if btn_active == "all" -%}background-ligth-grey{% endif -%}" role="button" id="ViewAllGamesButton">All</button>
 </div>
 {% endblock -%}
 {% block content -%}
+{% if games.items|length != 0 -%}
 <p>
   Games {{ games.items[0].id }}-{{ games.items[-1].id }}:
 </p>
@@ -45,7 +46,7 @@
           {% endif -%}
           <td>{{ game.parse_state() }}</td>
           <td>{{ game.players|listify("name", extract_attr=True) }}</td>
-          <td><a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
+          <td data-toggle="tooltip" data-placement="top" title="not yet avaliable"><a class="btn disabled background-grey" aria-disabled="true" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
         </tr>
       {% endfor -%}
     </tbody>
@@ -63,4 +64,9 @@
     </div>
   </div>
 </div>
+{% else -%}
+<p class="container">
+    Currently there are no games avaliable
+</p>
+{% endif -%}
 {% endblock -%}

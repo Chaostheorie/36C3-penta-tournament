@@ -1,6 +1,6 @@
 from app import app
 from app.models import Games, Players
-from flask import render_template, request, jsonify, abort
+from flask import render_template, request, jsonify, abort, redirect
 import app.utils as utils
 
 
@@ -47,8 +47,9 @@ def games_main_view(page=1):
     else:
         games = Games.query.filter_by(state=1).paginate(page, per_page=30)
         btn_active = "current"
-    return render_template("games.html", active="games",
-                           games=games, btn_active=btn_active)
+    game_creation = (len(Players.query.all()) >= 2)
+    return render_template("games.html", active="games", games=games,
+                           game_creation=game_creation, btn_active=btn_active)
 
 
 @app.route("/game/create", methods=["POST"])
@@ -109,14 +110,13 @@ def create_tournament():
     elif step == 3.0:
         name = request.args.get("name", default=None)
         app.master_name = name
-    elif step == 3.5:
-        name = request.args.get("name", default=None)
-        db.session.add(Players(name=name))
-        db.session.commit()
     elif step == 4:
         appendix["name"] = app.tournament_name
         appendix["master"] = app.master_name
         app.running = True
+        utils.dump_enviroment()
+        if request.args.get("add_players", default=False) == "true":
+            return redirect("/players/add-players")
     return render_template("create_tournament.html",
                            step=step, active="settings", appendix=appendix)
 

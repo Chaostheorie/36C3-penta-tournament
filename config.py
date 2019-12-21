@@ -10,33 +10,13 @@ load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-def check_preenv(key):
-    with open("preenv.json", "r+") as f:
-        try:
-            preenv = json.load(f)
-        except JSONDecodeError:
-            print("Preenv skipped")
-        if isinstance(key, list):
-            if len([item for item in key if key not in preenv.keys()]) > 0:
-                return False
-        else:
-            if key not in preenv.keys():
-                return False
-        return True
-
-
-def load_preenv(key):
-    with open("preenv.json") as f:
-        preenv = json.load(f)
-    return preenv[key]
-
-
 class config(object):
     # App infos
     APP_VERSION = "Experimental"
     APP_NAME = "36C3 Edition Penta-Tournament"
     APP_LOCAL = "en"
-    LOAD_PREENV = True
+    LOAD_ENVIROMENT = True
+    SAVE_ENVIROMENT = True
 
     # SQLAlchemy Settings
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI") or \
@@ -46,11 +26,8 @@ class config(object):
     # Basedir
     BASEDIR = basedir
 
-
-class BasicAuthConfig(config):
-    BASIC_AUTH_PASSWORD = (check_preenv("password") and load_preenv("password")) \
-                         or os.urandom(36)
-    BASIC_AUTH_USERNAME = (check_preenv("username") and load_preenv("username")) \
-                         or os.urandom(36)
-    BASIC_AUTH_FORCE = (check_preenv("force") and load_preenv("force")) \
-                      or True
+    # auth
+    BASIC_AUTH_ACTIVE = False
+    BASIC_AUTH_FORCE = False
+    BASIC_AUTH_USERNAME = ""
+    BASIC_AUTH_PASSWORD = ""
