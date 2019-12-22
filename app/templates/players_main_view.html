@@ -20,7 +20,7 @@
           <th scope="row">{{ player.id }}</th>
           <td>{{ player.name }}</td>
           <td>{{ player.points() }}</td>
-          <td class="col-sm"><a href="{{ url_for("player_view", id=player.id) }}" class="btn btn-primary background-grey">See More</a></td>
+          <td class="col-sm"><a href="{{ url_for("player_view", id=player.id) }}" class="btn background-grey btn-sm">See More</a></td>
         </tr>
       {% endfor -%}
     </tbody>
