@@ -109,4 +109,4 @@ def dump_enviroment():
     from app.models import Enviroment
     with open("preenv.json", "w+") as f:
         json.dump([{"key": envvar.key, "val": envvar.val}
-                   for envvar in Enviroment.query.all()])
+                   for envvar in Enviroment.query.all()], f)

@@ -5,9 +5,15 @@
         Select method:
     </p>
 </div>
-<div class="d-flex justify-content-center btn-group">
-  <a href="/games/create-game/pre-defined" class="btn background-grey">Select Players</a>
-  <a href="/games/create-game/unpaired" class="btn background-grey">Unpaired Matchup</a>
-  <a href="/games/create-game/find-opponent" class="btn background-grey">Find Opponent</a>
-</div>
+{% if avaliable == True -%}
+  <div class="d-flex justify-content-center btn-group">
+    <a href="/games/create-game/pre-defined" class="btn background-grey">Select Players</a>
+    <a href="/games/create-game/unpaired" class="btn background-grey">Unpaired Matchup</a>
+    <a href="/games/create-game/find-opponent" class="btn background-grey">Find Opponent</a>
+  </div>
+{% else -%}
+  <p class="d-flex justify-content-center">
+      You need at least two players for a matchup
+  </p>
+{% endif -%}
 {% endblock -%}

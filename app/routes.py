@@ -69,7 +69,8 @@ def view_game(id):
 
 @app.route("/games/view/<int:id>")
 def game_view(id):
-    return render_template("game_view.html", game=Games.query.get_or_404(id))
+    return render_template("game_view.html",  active="games",
+                           game=Games.query.get_or_404(id))
 
 
 @app.route("/games/create-game")
@@ -77,7 +78,11 @@ def game_view(id):
 def create_game_select(method="selection"):
     appendix = {}
     if method == "selection":
-        return render_template("create_game_select.html", active="games")
+        if len(Players.query.all()) < 2:
+            return render_template("create_game_select.html",
+                                   acive="games", avaliable=False)
+        return render_template("create_game_select.html",
+                               active="games", avaliable=True)
     elif method == "unpaired":
         appendix["player1"], appendix["player2"] = Games.find_pair()
         parsed = "Switzer System"
@@ -114,7 +119,6 @@ def create_tournament():
         appendix["name"] = app.tournament_name
         appendix["master"] = app.master_name
         app.running = True
-        utils.dump_enviroment()
         if request.args.get("add_players", default=False) == "true":
             return redirect("/players/add-players")
     return render_template("create_tournament.html",

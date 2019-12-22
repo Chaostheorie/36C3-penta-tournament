@@ -13,18 +13,22 @@ class Players(db.Model):
     def points(self):
         points = 0
         for game in self.games.all():
-            winner = (game.winner().id == self.id)
-            difference = 0
-            for player in game.result:
-                not_self = (player["player_id"] != self.id)
-                if player["points"] > difference and winner and not_self:
-                    difference = player["points"]
-                elif player["player_id"] == self.id and winner is False and not_self:
-                    differnce = player["points"]
-            if winner:
-                points += 3 - difference
+            game_winner = game.winner(only_full=True)
+            if game_winner is None:
+                pass
             else:
-                points -= 3 - difference
+                winner = (game_winner == self.id)
+                difference = 0
+                for player in game.result:
+                    not_self = (player["player_id"] != self.id)
+                    if player["points"] > difference and winner and not_self:
+                        difference = player["points"]
+                    elif player["player_id"] == self.id and winner is False and not_self:
+                        differnce = player["points"]
+                if winner:
+                    points += 3 - difference
+                else:
+                    points -= 3 - difference
         return points
 
     @staticmethod
@@ -98,6 +102,7 @@ class Games(db.Model):
     @staticmethod
     def find_pair(player1=None, exceptions=[]):
         """Find pair """
+        player2 = None
         if player1 is None:
             player1 = Players.query.order_by(func.random()).first()
         players = [{"player": player, "points": player.points()}
@@ -108,6 +113,8 @@ class Games(db.Model):
             if Games.unmatched(player1, player) and player.name not in exceptions:
                 player2 = player
                 break
+        if player2 is None:
+            return player1, Players.query.filter(Players.name != player1.name).first()
         return player1, player2
 
     def __repr__(self):

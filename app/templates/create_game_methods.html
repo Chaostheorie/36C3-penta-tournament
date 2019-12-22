@@ -10,7 +10,7 @@
 {% if method == "unpaired" or method == "find-opponent" -%}
   <script>
       $( "#CreateMatchButton" ).click(function () {
-        $.post( "/game/create", { player1: {{ appendix["player1"].id }}, player2: {{ appendix["player2"].id }} }, function( data ) {
+        $.post( "/game/create", { player1: '{{ appendix["player1"].name }}', player2: '{{ appendix["player2"].name }}' }, function( data ) {
           window.location = "/games/view/" + data["id"];
           });
         });
@@ -27,7 +27,7 @@
     resolverSettings: {
         url: '/players/autocomplete.json'
     },
-    minLength: 1
+    minLength: 0
 });
     $( "#FindOpponentInputButton" ).click(function () {
       window.location = "/games/create-game/find-opponent?player=" + document.getElementById("player").value;
@@ -43,7 +43,7 @@
       resolverSettings: {
           url: '/players/autocomplete.json'
       },
-      minLength: 1
+      minLength: 0
   });
 
 </script>

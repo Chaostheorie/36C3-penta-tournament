@@ -1,6 +1,11 @@
 {% set footer = False -%}
+{% set sub_header = False -%}
 {% extends "base.html" -%}
+{% block advanced_sub_header -%}
+<div class="blackout-font">Game #{{ game.id }} is {{ game.parse_state() }}</div>
+{% endblock -%}
 {% block javascript -%}
 {% endblock -%}
 {% block content -%}
+
 {% endblock -%}
