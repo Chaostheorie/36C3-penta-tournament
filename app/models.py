@@ -1,6 +1,7 @@
 from app import db
 import app.utils as utils
 from sqlalchemy.sql import func
+from datetime import date
 from operator import itemgetter
 
 
@@ -17,14 +18,15 @@ class Players(db.Model):
             if game_winner is None:
                 pass
             else:
-                winner = (game_winner == self.id)
+                winner = (game_winner.id == self.id)
                 difference = 0
                 for player in game.result:
-                    not_self = (player["player_id"] != self.id)
-                    if player["points"] > difference and winner and not_self:
-                        difference = player["points"]
-                    elif player["player_id"] == self.id and winner is False and not_self:
-                        differnce = player["points"]
+                    not_self = (int(player["player_id"]) != self.id)
+                    if int(player["points"]) > difference and not_self:
+                        difference = int(player["points"])
+                    elif int(player["player_id"]) == self.id and winner is False:
+                        differnce = int(player["points"])
+                        break
                 if winner:
                     points += 3 - difference
                 else:
@@ -68,6 +70,18 @@ class Games(db.Model):
                       if result["player_id"] == player.id]
         return points[0]
 
+    def duration(self, parsed=False):
+        duration = self.date - date.today()
+        if not parsed:
+            return duration
+        else:
+            if duration.days == 0:
+                return "today"
+            elif duration.days == 1:
+                return "yesterday"
+            elif duration.days < 6:
+                return f"{duration.days} ago"
+
     players = db.relationship("Players", secondary="players_games",
                               backref=db.backref("games", lazy="dynamic"))
 
@@ -75,11 +89,13 @@ class Games(db.Model):
         if only_full:
             winner = None
             for player in self.result:
-                if player["points"] == 3:
+                if int(player["points"]) == 3:
                     winner = player
                     break
             if winner is None:
                 return None
+            else:
+                return Players.query.get(winner["player_id"])
         else:
             winner = self.result[0]
             for player in self.result:

@@ -1,7 +1,9 @@
-from app import app
+from app import app, db
 from app.models import Games, Players
 from flask import render_template, request, jsonify, abort, redirect
 import app.utils as utils
+from sqlalchemy.orm.attributes import flag_modified
+
 
 
 @app.route("/")
@@ -62,15 +64,37 @@ def create_game():
     else:
         return abort(400)
 
-@app.route("/user/<int:id>")
-def view_game(id):
-    return Players.query.get_or_404(id)
+
+@app.route("/game/delete", methods=["POST"])
+def delete_game():
+    if "game_id" in request.form.keys():
+        game = Games.query.get_or_404(request.form["game_id"])
+        utils.delete_game(game)
+        return jsonify({"id": request.form["game_id"], "status": "deleted"})
+    else:
+        return abort(400)
+
+@app.route("/game/end", methods=["POST"])
+def end_game():
+    if "game_id" in reques.form.keys():
+        game = Games.query.get_or_404(request.form["game_id"])
+        game = utils.end_game(game, flush=True)
+        return jsonify({"id": game.id, "state": game.state})
+    else:
+        return abort(400)
 
 
 @app.route("/games/view/<int:id>")
-def game_view(id):
-    return render_template("game_view.html",  active="games",
-                           game=Games.query.get_or_404(id))
+def view_game(id):
+    game = Games.query.get_or_404(id)
+    states = [{"value": 1, "state": "running", "active": False},
+              {"value": 2, "state": "ready", "active": False},
+              {"value": 3, "state": "paused", "active": False},
+              {"value": 0, "state": "finished", "active": False}]
+    [states[i].__setitem__("active", True) for i in range(len(states))
+     if states[i]["value"] == game.state]
+    return render_template("game_view.html",  active="games", states=states,
+                           game=game)
 
 
 @app.route("/games/create-game")
@@ -151,6 +175,34 @@ def add_players():
 def settings():
     return render_template("settings.html", tournament_name=app.tournament_name,
                            active="settings", master=app.master_name)
+
+
+@app.route("/game/update", methods=["POST"])
+def update_game_data():
+    if "data[0][id]" in request.form and "game_id" in request.form:
+        data = []
+        keys = ["id", "points"]
+        data_steps = int((len(request.form))/2) - 1
+        for i in range(data_steps):
+            data.append({})
+            for key in keys:
+                data[i][key] = request.form[f"data[{i}][{key}]"]
+        game = Games.query.get_or_404(int(request.form["game_id"]))
+        results = game.result
+        for new_result in data:
+            for i in range(len(results)):
+                if results[i]["player_id"] == int(new_result["id"]):
+                    results[i]["points"] = new_result["points"]
+                    break
+        game.result = results
+        flag_modified(game, "result")
+        game.state = int(request.form["state"])
+        db.session.merge(game)
+        db.session.flush()
+        db.session.commit()
+        return jsonify({"game_id": game.id, "result": game.result})
+    else:
+        return abort(400)
 
 
 @app.route("/settings/changename")

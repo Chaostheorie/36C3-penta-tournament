@@ -31,7 +31,7 @@
             {% endif -%}
             <td>{{ game.parse_state() }}</td>
             <td>{{ game.players|listify("name", extract_attr=True) }}</td>
-            <td><a class="btn btn-primary background-grey" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
+            <td><a class="btn background-grey btn-sm" href="{{ url_for("view_game", id=game.id) }}" role="button">See More</a></td>
           </tr>
         {% endfor -%}
       </tbody>

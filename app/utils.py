@@ -1,6 +1,7 @@
 from app import app, db
 from itertools import groupby
 import json
+import datetime
 
 
 def setenvvar(**kwargs):
@@ -56,10 +57,12 @@ def sortin(players, player, extract=False):
     return players
 
 
-def create_game(player1, player2, flush=False):
+def create_game(player1, player2, flush=False, date=None):
     from app.models import Games, PlayersGames
+    if date is None:
+        date = datetime.date.today()
     g = Games(result=[{"player_id": player1.id, "points": 0},
-                      {"player_id": player2.id, "points": 0}])
+                      {"player_id": player2.id, "points": 0}], date=date)
     db.session.add(g)
     db.session.flush()
     pg1 = PlayersGames(player_id=player1.id, game_id=g.id)
@@ -70,6 +73,20 @@ def create_game(player1, player2, flush=False):
     if flush:
         db.session.flush()
     return g
+
+
+def delete_game(game):
+    db.session.delete(game)
+    db.session.commit()
+    return
+
+
+def end_game(game, flush=False):
+    game.state = 0
+    db.session.commit()
+    if flush:
+        db.session.flush()
+    return game
 
 
 def load_enviroment():

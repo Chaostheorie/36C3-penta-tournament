@@ -2,10 +2,53 @@
 {% set sub_header = False -%}
 {% extends "base.html" -%}
 {% block advanced_sub_header -%}
-<div class="blackout-font">Game #{{ game.id }} is {{ game.parse_state() }}</div>
+<div class="blackout-font">Game #{{ game.id }} {% if game.winner(only_full=True) != None -%}won by {{ game.winner().name }} {% endif -%} is <select class="selectpicker blackout-font" id="state">
+   {% for state in states -%}
+      <option value="{{ state["value"] }}" {% if state["active"] == True -%}selected{% endif -%}>{{ state["state"] }}</option>
+   {% endfor -%}
+</select> since {{ game.duration(parsed=True) }}</div>
 {% endblock -%}
 {% block javascript -%}
+<script>
+  $( "#UpdateGame" ).click(function () {
+    var players = [];
+    {% for player in game.players -%}
+      players.push({"id": {{ player.id }}, "points": document.getElementById("{{ player.id }}-results").value});
+    {% endfor -%}
+    $.post("/game/update", {"data": players, "game_id": {{ game.id }}, "state": document.getElementById("state").value}, function (data) {
+      location.reload();
+    });
+  });
+  $( "#DeleteGame" ).click(function() {
+    $.post("/game/delete", {"game_id": {{ game.id }} }, function () {
+      window.location = "/games";
+    });
+  });
+</script>
 {% endblock -%}
 {% block content -%}
+<div class="row">
+  <table class="table">
+    <thead class="thead-dark blackout-font">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in game.players -%}
+        <tr class="blackout-font">
+          <th scope="row">{{ player.id }}</th>
+          <td>{{ player.name }}</td>
+          <td><input type="text" class="form-control player-input" id="{{ player.id }}-results" value="{{ player|game_results(game) }}" required></input></td>
+        </tr>
+      {% endfor -%}
+    </tbody>
+  </table>
+</div>
 
+<div class="row btn-group d-flex justify-content-center">
+  <button class="btn background-grey" type="button" id="UpdateGame">Update Game Data</button> <button class="btn background-grey " type="button" id="DeleteGame">Delete Game</button>
+</div>
 {% endblock -%}
