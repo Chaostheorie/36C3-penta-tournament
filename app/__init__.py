@@ -18,7 +18,7 @@ db.create_all()
 
 import app.utils as utils
 if app.config["LOAD_ENVIROMENT"]:
-    utils.load_enviroment()
+    utils.load_enviroment(without_auth=app.config["USEENV"])
 if app.config["SAVE_ENVIROMENT"]:
     atexit.register(utils.save_enviroment)
 

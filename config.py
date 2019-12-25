@@ -34,7 +34,8 @@ class config(object):
     BASEDIR = basedir
 
     # auth
-    BASIC_AUTH_ACTIVE = False
-    BASIC_AUTH_FORCE = False
-    BASIC_AUTH_USERNAME = ""
-    BASIC_AUTH_PASSWORD = ""
+    USEENV = os.getenv("USEENV") or False
+    BASIC_AUTH_ACTIVE = os.getenv("BASIC_AUTH_ACTIVE") or False
+    BASIC_AUTH_FORCE = os.getenv("BASIC_AUTH_FORCE") or False
+    BASIC_AUTH_USERNAME = os.getenv("BASIC_AUTH_USERNAME") or ""
+    BASIC_AUTH_PASSWORD = os.getenv("BASIC_AUTH_PASSWORD") or ""

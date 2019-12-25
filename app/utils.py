@@ -99,7 +99,7 @@ def load_enviroment():
             app.config[item.key] = item.val["val"]
 
 
-def save_enviroment():
+def save_enviroment(without_auth=False):
     from app.models import Enviroment
     for env in Enviroment.query.all():
         db.session.delete(env)
@@ -113,8 +113,11 @@ def save_enviroment():
         else:
             envvar.val["val"] = app.__getattribute__(key)
         db.session.commit()
-    keys = ["BASIC_AUTH_FORCE", "BASIC_AUTH_PASSWORD",
-            "BASIC_AUTH_USERNAME", "BASIC_AUTH_ACTIVE"]
+    if without_auth:
+        keys = ["BASIC_AUTH_FORCE", "BASIC_AUTH_PASSWORD",
+                "BASIC_AUTH_USERNAME", "BASIC_AUTH_ACTIVE"]
+    else:
+        keys = []  # Will be added asap
     for key in keys:
         if envvar is None:
             db.session.add(Enviroment(key=key, type=1,
