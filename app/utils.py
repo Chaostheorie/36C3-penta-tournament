@@ -101,6 +101,9 @@ def load_enviroment():
 
 def save_enviroment():
     from app.models import Enviroment
+    for env in Enviroment.query.all():
+        db.session.delete(env)
+    db.session.commit()
     keys = ["running", "master_name", "tournament_name"]
     for key in keys:
         envvar = Enviroment.query.filter_by(key=key).first()

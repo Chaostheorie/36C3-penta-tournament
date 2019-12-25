@@ -74,6 +74,7 @@ def delete_game():
     else:
         return abort(400)
 
+
 @app.route("/game/end", methods=["POST"])
 def end_game():
     if "game_id" in reques.form.keys():
@@ -175,6 +176,34 @@ def add_players():
 def settings():
     return render_template("settings.html", tournament_name=app.tournament_name,
                            active="settings", master=app.master_name)
+
+
+@app.route("/settings/changeauth")
+def change_auth():
+    active = request.args.get("active", default=None)
+    pwd = request.args.get("password", default=None)
+    name = request.args.get("name", default=None)
+    force = request.args.get("force", default=None)
+    if pwd is None and name is None and force is None and active is None:
+        return abort(400)
+    if pwd == "":
+        pwd = None
+    if name == "":
+        name = None
+    if force == "on":
+        app.config["BASIC_AUTH_FORCE"] = True
+    elif force == "off":
+        app.config["BASIC_AUTH_FORCE"] = False
+    if pwd is not None and pwd != app.config["BASIC_AUTH_PASSWORD"]:
+        app.config["BASIC_AUTH_PASSWORD"] = pwd
+    if name is not None and name != app.config["BASIC_AUTH_USERNAME"]:
+        app.config["BASIC_AUTH_USERNAME"] = name
+    if active == "on":
+        app.config["BASIC_AUTH_ACTIVE"] = True
+    elif active == "off":
+        app.config["BASIC_AUTH_ACTIVE"] = False
+    utils.save_enviroment()
+    return redirec("/settings")
 
 
 @app.route("/game/update", methods=["POST"])

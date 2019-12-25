@@ -12,12 +12,24 @@
         location.reload();
         });
       });
-      $( "#ChangeMasterNameForm" ).submit(function( event ) {
-        event.preventDefault();
-        $.get( "/settings/changemaster", { name: document.getElementById("MasterName").value}, function( data ) {
-          location.reload();
-          });
+    $( "#ChangeMasterNameForm" ).submit(function( event ) {
+      event.preventDefault();
+      $.get( "/settings/changemaster", { name: document.getElementById("MasterName").value}, function( data ) {
+        location.reload();
         });
+      });
+    $( "#ChangeAuthNameForm" ).submit(function( event) {
+      event.preventDefault();
+      $.get( "/settings/changeauth", { name: document.getElementById("AuthName").value}, function( data ) {
+        location.reload();
+        });
+    });
+    $( "#ChangeAuth" ).submit(function ( event ) {
+      event.preventDefault();
+      $.get( "/settings/changeauth", { name: document.getElementById("AuthName").value}, function( data ) {
+        location.reload();
+        });
+      });
   </script>
 {% endblock -%}
 {% block content -%}
@@ -47,30 +59,22 @@
               <button type="submit" class="btn btn-primary background-grey" name="ChangeMasterNameButton">Change Name</button>
           </div>
       </form>
-      <div class="row">
-          <div class="col">
-
-          </div>
-          <div class="col">
-
-          </div>
-      </div>
-      <div class="row">
-          <div class="col">
-
-          </div>
-          <div class="col">
-
-          </div>
-      </div>
-      <div class="row">
-          <div class="col">
-
-          </div>
-          <div class="col">
-
-          </div>
-      </div>
-  </div>
+      <form class="m-2 container" action="/settings/changeauth" method="get">
+        <fieldset class="row">
+            <input name="name" id="name" class="form-control" placeholder="Enter auth username"></input>
+        </fieldset>
+        <fieldset class="row">
+          <input name="password" id="TournamentName" class="form-control" placeholder="Enter auth password"></input>
+        </fieldset>
+        <div class="row form-group">
+          <label class="col checkbox-inline">
+            <input type="checkbox" {% if config["BASIC_AUTH_ACTIVE"] == True -%} checked {% endif -%}data-toggle="toggle" data-onstyle="dark" name="active"> Active
+          </label>
+          <label class="col checkbox-inline">
+            <input type="checkbox" {% if config["BASIC_AUTH_FORCE"] == True %} checked {% endif -%} data-toggle="toggle" data-onstyle="dark" name="force"> Force
+          </label>
+          <button type="submit" class="btn background-grey btn-sm">Change Auth</button>
+        </div>
+    </div>
 </div>
 {% endblock -%}
