@@ -89,11 +89,15 @@ def end_game(game, flush=False):
     return game
 
 
-def load_enviroment():
+def load_enviroment(without_auth=False):
     from app.models import Enviroment
     vars = Enviroment.query.all()
+    auth_keys = ["BASIC_AUTH_FORCE", "BASIC_AUTH_PASSWORD",
+                 "BASIC_AUTH_USERNAME", "BASIC_AUTH_ACTIVE"]
     for item in vars:
-        if item.type == 0:
+        if without_auth and item.key in auth_keys:
+            pass
+        elif item.type == 0:
             app.__setattr__(item.key, item.val["val"])
         elif item.type == 1:
             app.config[item.key] = item.val["val"]
