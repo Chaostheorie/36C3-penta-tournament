@@ -105,30 +105,39 @@ def load_enviroment(without_auth=False):
 
 def save_enviroment(without_auth=False):
     from app.models import Enviroment
-    for env in Enviroment.query.all():
-        db.session.delete(env)
-    db.session.commit()
-    keys = ["running", "master_name", "tournament_name"]
-    for key in keys:
-        envvar = Enviroment.query.filter_by(key=key).first()
-        if envvar is None:
-            db.session.add(Enviroment(key=key, type=0,
-                                      val={"val": app.__getattribute__(key)}))
-        else:
-            envvar.val["val"] = app.__getattribute__(key)
+    try:
+        for env in Enviroment.query.all():
+            db.session.delete(env)
         db.session.commit()
+    except:
+        pass
+    keys = ["running", "master_name", "tournament_name"]
+    try:
+        for key in keys:
+            envvar = Enviroment.query.filter_by(key=key).first()
+            if envvar is None:
+                db.session.add(Enviroment(key=key, type=0,
+                                          val={"val": app.__getattribute__(key)}))
+            else:
+                envvar.val["val"] = app.__getattribute__(key)
+            db.session.commit()
+    except:
+        pass
     if without_auth:
         keys = ["BASIC_AUTH_FORCE", "BASIC_AUTH_PASSWORD",
                 "BASIC_AUTH_USERNAME", "BASIC_AUTH_ACTIVE"]
     else:
         keys = []  # Will be added asap
     for key in keys:
-        if envvar is None:
-            db.session.add(Enviroment(key=key, type=1,
-                                      val={"val": app.config[key]}))
-        else:
-            envvar.val["val"] = app.config[key]
-        db.session.commit()
+        try:
+            if envvar is None:
+                db.session.add(Enviroment(key=key, type=1,
+                                          val={"val": app.config[key]}))
+            else:
+                envvar.val["val"] = app.config[key]
+            db.session.commit()
+        except:
+            pass
 
 
 def dump_enviroment():
