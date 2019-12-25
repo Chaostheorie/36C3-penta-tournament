@@ -133,6 +133,16 @@ class Games(db.Model):
             return player1, Players.query.filter(Players.name != player1.name).first()
         return player1, player2
 
+    @staticmethod
+    def find_group(player1=None, players=[], exceptions=[]):
+        """Find a group of players that haven't matched up with each other"""
+        if player1 is None:
+            player1 = Players.query.order_by(func.random()).first()
+        all_players = [{"player": player, "points": player.points()}
+                       for player in Players.query.filter(Players.id != player1.id
+                                                          ).all()]
+        all_players = utils.sortin(all_players, player1, extract=True)
+
     def __repr__(self):
         return f"<game {self.id} from {self.date.strftime('%d.%m.%Y')}>"
 
