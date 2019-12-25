@@ -203,7 +203,7 @@ def change_auth():
     elif active == "off":
         app.config["BASIC_AUTH_ACTIVE"] = False
     utils.save_enviroment()
-    return redirec("/settings")
+    return redirect("/settings")
 
 
 @app.route("/game/update", methods=["POST"])
