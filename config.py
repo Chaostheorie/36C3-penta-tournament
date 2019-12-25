@@ -18,9 +18,16 @@ class config(object):
     LOAD_ENVIROMENT = True
     SAVE_ENVIROMENT = True
 
-    # SQLAlchemy Settings
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI") or \
-        "sqlite:///" + os.path.join(basedir, "app.db")
+    # Secret key for sessions please change it before using
+    SECRET_KEY = os.environ["SECRET_KEY"]
+
+    # Database Url
+    # Default is a file based sqlite3 databse in the static/databse folder
+    try:
+        SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    except KeyError:
+        SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir,
+                                                              "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Basedir

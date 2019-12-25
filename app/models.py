@@ -142,6 +142,7 @@ class Games(db.Model):
                        for player in Players.query.filter(Players.id != player1.id
                                                           ).all()]
         all_players = utils.sortin(all_players, player1, extract=True)
+        for player in
 
     def __repr__(self):
         return f"<game {self.id} from {self.date.strftime('%d.%m.%Y')}>"
