@@ -10,7 +10,7 @@ app.config.from_object(config)
 db = SQLAlchemy(app)
 app.tournament_name = ""
 app.master_name = ""
-app.running = False
+app.running = True
 
 from app.models import *
 db.create_all()
@@ -18,7 +18,8 @@ db.create_all()
 
 import app.utils as utils
 if app.config["LOAD_ENVIROMENT"]:
-    utils.load_enviroment(without_auth=app.config["USEENV"])
+    utils.load_enviroment(without_auth=app.config["AUTHUSEENV"],
+                          use_env_only=app.config["USEENV"])
 if app.config["SAVE_ENVIROMENT"]:
     atexit.register(utils.save_enviroment)
 

@@ -33,8 +33,14 @@ class config(object):
     # Basedir
     BASEDIR = basedir
 
-    # auth
+    # External Enviroment
     USEENV = os.getenv("USEENV") or False
+    RUNNING = os.getenv("RUNNING") or False
+    TOURNAMENNTNAME = os.getenv("TOURNAMENNTNAME") or ""
+    TOURNAMENNTMASTER = os.getenv("TOURNAMENNTMASTER") or ""
+
+    # auth
+    AUTHUSEENV = os.getenv("AUTHUSEENV") or False
     BASIC_AUTH_ACTIVE = os.getenv("BASIC_AUTH_ACTIVE") or False
     BASIC_AUTH_FORCE = os.getenv("BASIC_AUTH_FORCE") or False
     BASIC_AUTH_USERNAME = os.getenv("BASIC_AUTH_USERNAME") or ""

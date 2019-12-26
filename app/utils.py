@@ -89,13 +89,19 @@ def end_game(game, flush=False):
     return game
 
 
-def load_enviroment(without_auth=False):
+def load_enviroment(without_auth=False, use_env_only=False):
     from app.models import Enviroment
-    vars = Enviroment.query.all()
     auth_keys = ["BASIC_AUTH_FORCE", "BASIC_AUTH_PASSWORD",
                  "BASIC_AUTH_USERNAME", "BASIC_AUTH_ACTIVE"]
+    if use_env_only:
+        envvars = ["TOURNAMENNTNAME", "TOURNAMENNTMASTER", "RUNNING"]
+        for var in envvars:
+            app.__setattr__(var, app.config[var])
+    else:
+        envvars = []
+    vars = Enviroment.query.all()
     for item in vars:
-        if without_auth and item.key in auth_keys:
+        if (without_auth and item.key in auth_keys) or (item.key in envvars):
             pass
         elif item.type == 0:
             app.__setattr__(item.key, item.val["val"])
